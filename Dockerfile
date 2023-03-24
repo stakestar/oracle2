@@ -1,21 +1,17 @@
-FROM node:18 as base
+FROM node:18
 
 WORKDIR /app
 
+ARG NPM_TOKEN
+
 COPY package*.json ./
+COPY .npmrc.prod ./.npmrc
 
 RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn run build:release
 
-FROM node:18-alpine
-
-ENV NODE_ENV production
-
-COPY package.json yarn.lock ./
-
 RUN yarn install --production --frozen-lockfile
-
-COPY --from=base /app/build ./build
+RUN rm -rf .npmrc
 
 CMD ["yarn","start"]

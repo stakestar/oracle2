@@ -1,4 +1,9 @@
 version: "3.9"
 services:
   bot:
-    build: .
+    build:
+      context: .
+      args:
+        NPM_TOKEN: ${NPM_TOKEN}
+#    environment:
+#      - NPM_TOKEN
