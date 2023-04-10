@@ -5,5 +5,7 @@ services:
       context: .
       args:
         NPM_TOKEN: ${NPM_TOKEN}
-#    environment:
-#      - NPM_TOKEN
+    environment:
+      - NETWORK
+      - RPC_URL
+      - BEACON_RPC_URL
