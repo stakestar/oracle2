@@ -2,8 +2,7 @@ import { Context } from './context';
 import { BigNumber } from 'ethers';
 
 export class Service {
-  constructor(private context: Context) {
-  }
+  constructor(private context: Context) {}
 
   public async fetchValidatorPks() {
     const registry = this.context.contracts.stakeStarOracleRegistry;
@@ -75,7 +74,7 @@ export class Service {
       } else {
         if (state.error.code === 404) {
           // not available on chain but pending in contract
-          balance = BigNumber.from(32).mul(BigNumber.from(10).pow(18));
+          balance = BigNumber.from(32).mul(BigNumber.from(10).pow(9));
         } else {
           console.log(
             `Validator state retrieving error (slot${slot}, pk :${pk})\n${JSON.stringify(
@@ -86,9 +85,7 @@ export class Service {
         }
       }
 
-      console.log(
-        `slot:${slot}, validator${pk}, balance:${balance}, original balance: ${state.response.data.balance}`,
-      );
+      console.log(`slot:${slot}, validator${pk}, balance:${balance}, sum: ${sum}`);
 
       sum = sum.add(balance);
     }
@@ -122,10 +119,34 @@ export class Service {
   }
 
   async getLastSubmittedEpoch() {
-    const result =
-      await this.context.contracts.stakeStarOracleStrict.getCurrentProposal(
-        this.context.wallet.address,
-      );
-    return result.proposed_epoch;
+    let lastEpoch = 0;
+    const currentBlock = await this.context.rpc.getBlockNumber();
+    const lastBlock = currentBlock - 22000; /// ~3 days
+
+    console.log(`Searching txs from ${lastBlock}, to ${currentBlock} block`);
+    const txs = await this.context.etherscanRpc.getHistory(
+      this.context.wallet.address,
+      lastBlock,
+      currentBlock,
+    );
+    console.log(`Found ${txs.length} txs`);
+
+    for (const tx of txs.reverse()) {
+      const contract = this.context.contracts.stakeStarOracleStrict;
+      if (tx.to === contract.address) {
+        const txData = await contract.interface.parseTransaction({
+          data: tx.data,
+        });
+        lastEpoch = txData.args[0];
+        console.log(`Last submitted epoch: ${lastEpoch}, tx ${tx.hash}`);
+
+        break;
+      }
+    }
+    // const result =
+    //   await this.context.contracts.stakeStarOracleStrict.getCurrentProposal(
+    //     this.context.wallet.address,
+    //   );
+    return lastEpoch;
   }
 }

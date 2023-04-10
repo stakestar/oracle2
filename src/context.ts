@@ -15,12 +15,15 @@ class Contracts {
   public stakeStarOracleRegistry: StakeStarRegistry;
 }
 
+const ETHERSCAN_API_KEY = 'KXSQ43885GZVV85EBDSUDIK8BXRMVWS2QT';
+
 export class Context {
   public beaconClient: lodestar.Api;
   public rpc: providers.JsonRpcProvider;
   public contracts: Contracts;
   public withdrawalAddress: string;
   public wallet: Wallet;
+  public etherscanRpc: providers.EtherscanProvider;
 
   private constructor(cfg: Config) {
     const rpc = cfg.ENDPOINT_EXECUTION;
@@ -36,6 +39,12 @@ export class Context {
 
     const network = cfg.NETWORK;
     console.log(`Using NETWORK: ${network}`);
+
+    this.etherscanRpc = new providers.EtherscanProvider(
+      network,
+      ETHERSCAN_API_KEY,
+    );
+
     const addresses = ADDRESSES[network];
     this.contracts = new Contracts();
 

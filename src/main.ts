@@ -35,7 +35,6 @@ async function start() {
 
   console.log(`Fetching last submitted epoch.`);
   const lastSubmittedEpoch = await service.getLastSubmittedEpoch();
-  // const lastSubmittedEpoch = 0;
   console.log(`last submitted epoch ${lastSubmittedEpoch}`);
 
   if (nextEpoch <= lastSubmittedEpoch) {
