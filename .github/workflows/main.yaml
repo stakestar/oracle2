@@ -1,0 +1,46 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
+env:
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/196690008143/locations/global/workloadIdentityPools/main/providers/github'
+  SERVICE_ACCOUNT: 'github@stakestar.iam.gserviceaccount.com'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+      - uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider:  ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+      - id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@v1
+        with:
+          secrets: |-
+            github-token:stakestar/github_token
+      - uses: bikutadesu/create-npmrc@v1
+        with:
+          org_name: stakestar
+          auth_token: ${{ steps.secrets.outputs.github-token }}
+      - run: npm ci
+      - run: npm run build
+      - run: gcloud auth configure-docker
+      - uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: gcr.io/stakestar/oracle2
