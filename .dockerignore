@@ -1,8 +1,6 @@
 #.dockerignore
 .idea
 .git
-**/build
-**/node_modules
 **/.env
 
 src/test.ts
