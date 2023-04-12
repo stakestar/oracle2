@@ -36,8 +36,8 @@ jobs:
         with:
           org_name: stakestar
           auth_token: ${{ steps.secrets.outputs.github-token }}
-      - run: yarn
-      - run: yarn build
+      - run: yarn install --frozen-lockfile
+      - run: yarn run build:release
       - run: gcloud auth configure-docker
       - uses: docker/build-push-action@v3
         with:
