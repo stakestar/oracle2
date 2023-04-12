@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: npm
+          cache: yarn
       - uses: google-github-actions/auth@v1
         with:
           workload_identity_provider:  ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
@@ -36,8 +36,8 @@ jobs:
         with:
           org_name: stakestar
           auth_token: ${{ steps.secrets.outputs.github-token }}
-      - run: npm ci
-      - run: npm run build
+      - run: yarn
+      - run: yarn build
       - run: gcloud auth configure-docker
       - uses: docker/build-push-action@v3
         with:
