@@ -8,4 +8,4 @@ COPY node_modules/ node_modules/
 COPY build/src/ build/
 COPY package.json package.json
 
-ENTRYPOINT [ "node", "build/" ]
+ENTRYPOINT [ "node", "build/main.js" ]
