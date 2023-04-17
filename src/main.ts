@@ -1,7 +1,6 @@
 import { CONFIG } from './utils.js';
-
-import { Context } from './context.js';
 import { Service } from './service.js';
+import { Context } from './context.js';
 
 // check if already submitted
 // 1. Get epoch stakestaroracleStrict (EL)
@@ -28,9 +27,10 @@ async function start() {
   const finalizedEpoch = await service.getFinalizedEpoch();
   console.log(`Finalized epoch: ${finalizedEpoch}`);
   if (nextEpoch > finalizedEpoch) {
-    throw Error(
-      `Required epoch not finalized yet. Required: ${nextEpoch}, Finalized: ${finalizedEpoch}`,
+    console.log(
+      `Next epoch not finalized yet. Next epoch: ${nextEpoch}, Finalized: ${finalizedEpoch}`,
     );
+    return;
   }
 
   console.log(`Fetching last submitted epoch.`);
@@ -64,7 +64,10 @@ async function start() {
   console.log(`Total Balance: ${totalBalance}`);
 
   console.log(`Submitting balance`);
-  const tx = await context.contracts.stakeStarOracleStrict.save(nextEpoch, totalBalance);
+  const tx = await context.contracts.stakeStarOracleStrict.save(
+    nextEpoch,
+    totalBalance,
+  );
   console.log(`Done: ${tx.hash}`);
 }
 
