@@ -22,21 +22,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+          registry-url: 'https://npm.pkg.github.com'
           cache: yarn
       - uses: google-github-actions/auth@v1
         with:
           workload_identity_provider:  ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
-      - id: secrets
-        uses: google-github-actions/get-secretmanager-secrets@v1
-        with:
-          secrets: |-
-            github-token:stakestar/github_token
-      - uses: bikutadesu/create-npmrc@v1
-        with:
-          org_name: stakestar
-          auth_token: ${{ steps.secrets.outputs.github-token }}
       - run: yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: yarn run build:release
       - run: gcloud auth configure-docker
       - uses: docker/build-push-action@v3
