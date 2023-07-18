@@ -1,7 +1,7 @@
 import { CONFIG } from './utils.js';
-
-import { Context } from './context.js';
 import { Service } from './service.js';
+import { Context } from './context.js';
+import * as Sentry from '@sentry/node';
 
 // check if already submitted
 // 1. Get epoch stakestaroracleStrict (EL)
@@ -10,13 +10,17 @@ import { Service } from './service.js';
 // 4. Submit to StakestaroracleSrict strict (EL)
 
 //todo
-// refactor
-// validate string to number parsing in balances
-// api error handling
 // response mapping based on fork (capella etc) for slot to block number
-// how to check if already submitted data on epoch
 
 async function start() {
+  Sentry.init({
+    dsn: 'https://022d35cce92b4128933a0da831377af8@o774894.ingest.sentry.io/4505013018886144',
+
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
+  });
+
   const context = Context.init(CONFIG);
   const service = new Service(context);
 
@@ -28,9 +32,10 @@ async function start() {
   const finalizedEpoch = await service.getFinalizedEpoch();
   console.log(`Finalized epoch: ${finalizedEpoch}`);
   if (nextEpoch > finalizedEpoch) {
-    throw Error(
-      `Required epoch not finalized yet. Required: ${nextEpoch}, Finalized: ${finalizedEpoch}`,
+    console.log(
+      `Next epoch not finalized yet. Next epoch: ${nextEpoch}, Finalized: ${finalizedEpoch}`,
     );
+    return;
   }
 
   console.log(`Fetching last submitted epoch.`);
@@ -64,7 +69,10 @@ async function start() {
   console.log(`Total Balance: ${totalBalance}`);
 
   console.log(`Submitting balance`);
-  const tx = await context.contracts.stakeStarOracleStrict.save(nextEpoch, totalBalance);
+  const tx = await context.contracts.stakeStarOracleStrict.save(
+    nextEpoch,
+    totalBalance,
+  );
   console.log(`Done: ${tx.hash}`);
 }
 
