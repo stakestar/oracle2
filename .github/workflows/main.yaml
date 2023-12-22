@@ -13,28 +13,21 @@ permissions:
 env:
   WORKLOAD_IDENTITY_PROVIDER: 'projects/196690008143/locations/global/workloadIdentityPools/main/providers/github'
   SERVICE_ACCOUNT: 'github@stakestar.iam.gserviceaccount.com'
+  IMAGE: 'gcr.io/stakestar/oracle2'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: 'https://npm.pkg.github.com'
-          cache: yarn
-      - uses: google-github-actions/auth@v1
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/build
+      - uses: google-github-actions/auth@v2
         with:
           workload_identity_provider:  ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
-      - run: yarn install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: yarn run build:release
       - run: gcloud auth configure-docker
-      - uses: docker/build-push-action@v3
+      - uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: gcr.io/stakestar/oracle2
+          tags: ${{ env.IMAGE }}
