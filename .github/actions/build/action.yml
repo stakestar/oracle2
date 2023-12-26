@@ -18,5 +18,5 @@ runs:
       env:
         NODE_AUTH_TOKEN: ${{ inputs.token }}
       shell: bash
-    - run: npm run build:release
+    - run: yarn build:release
       shell: bash
