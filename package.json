@@ -16,14 +16,14 @@
     "tslib": "^2.4"
   },
   "devDependencies": {
-    "@types/jest": "^29.2",
+    "@types/jest": "^29.5",
     "@types/node": "^18",
     "@typescript-eslint/eslint-plugin": "^5.44",
     "@typescript-eslint/parser": "^5.44",
     "eslint": "^8.28",
     "eslint-config-prettier": "^8.5",
     "eslint-plugin-jest": "^27.1",
-    "jest": "^29.3",
+    "jest": "^29.7",
     "prettier": "^2.8",
     "ts-jest": "^29.0",
     "ts-node": "^10.9.1",
