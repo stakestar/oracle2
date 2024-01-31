@@ -1214,10 +1214,10 @@
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
-"@types/node@*", "@types/node@^18.19.8":
-  version "18.19.8"
-  resolved "https://registry.npmjs.org/@types/node/-/node-18.19.8.tgz"
-  integrity sha512-g1pZtPhsvGVTwmeVoexWZLTQaOvXwoSq//pTL0DHeNzUDrFnir4fgETdhjhIxjVnN+hKOuh98+E1eMLnUXstFg==
+"@types/node@*", "@types/node@^20.11.13":
+  version "20.11.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.13.tgz#188263ee2c8d590e181d3f5bfa7e485a932957cb"
+  integrity sha512-5G4zQwdiQBSWYTDAH1ctw2eidqdhMJaNsiIDKHFr55ihz5Trl2qqR8fdrT732yPBho5gkNxXm67OxWFBqX9aPg==
   dependencies:
     undici-types "~5.26.4"
 
